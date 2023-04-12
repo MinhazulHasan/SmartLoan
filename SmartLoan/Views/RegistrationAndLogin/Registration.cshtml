@@ -1,0 +1,89 @@
+﻿@model RegistrationCredential
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create Role</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <form method="post" asp-action="CreateRole" asp-controller="RegistrationAndLogin">
+                <div class="my-3">
+                    <label asp-for="@Model.IdentityRole.Name"> Role Name </label>
+                    <input asp-for="@Model.IdentityRole.Name" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="d-flex justify-content-center align-items-center">
+    <h1 class="text-primary text-center me-3 d-inline-block"> Registration Page</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="bi bi-plus-square"></i> Create Role
+    </button>
+</div>
+
+
+
+
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="w-50">
+        <div asp-validation-summary="All" class="text-danger">
+        </div>
+        <form method="post" asp-controller="RegistrationAndLogin" asp-action="Registration" class="p-3">
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Name"></label>
+                <input class="form-control" asp-for="@Model.Name" />
+                <span class="text-danger" asp-validation-for="@Model.Name"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Email"></label>
+                <input class="form-control" asp-for="@Model.Email" />
+                <span class="text-danger" asp-validation-for="@Model.Email"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Role"></label>
+                <select class="form-control" asp-for="@Model.Role" asp-items="@Model.AllRoles"> </select>
+                <span class="text-danger" asp-validation-for="@Model.Role"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Password"></label>
+                <input class="form-control" asp-for="@Model.Password" />
+                <span class="text-danger" asp-validation-for="@Model.Password"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.ConfirmPassword"></label>
+                <input class="form-control" asp-for="@Model.ConfirmPassword" />
+                <span class="text-danger" asp-validation-for="@Model.ConfirmPassword"></span>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-outline-info mt-3">Submit</button>
+            </div>
+    </form>
+    </div>
+
+</div>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

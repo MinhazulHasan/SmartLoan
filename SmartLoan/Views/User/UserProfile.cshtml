@@ -1,0 +1,35 @@
+﻿@model SmartLoan.ViewModels.UserProfileViewModel
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> _userManager;
+@{
+    ViewData["Title"] = "UserProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public async Task<string> GetRoleName(IdentityUser user, List<IdentityRole> roles)
+    {
+        foreach (var role in roles)
+        {
+            if (await _userManager.IsInRoleAsync(user, role.Name))
+            {
+                return role.Name.ToString();
+            }
+        }
+        return "No Role";
+    }
+}
+@if (TempData["PasswordChanged"] != null)
+{
+    <h3 class="text-info text-center my-3"> @TempData["PasswordChanged"] </h3>
+}
+<section class="d-flex justify-content-center align-items-center"> 
+
+    <div class="card w-50">
+        <div class="card-body">
+            <h3 class="text-info"> User Name: @Model.User.UserName </h3>
+            <h4> User Email: @Model.User.Email </h4>
+            <h4> Role: @GetRoleName(Model.User,Model.Roles).Result</h4>
+        </div>
+    </div>
+</section>

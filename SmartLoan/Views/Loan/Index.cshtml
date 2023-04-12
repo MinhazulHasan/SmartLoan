@@ -1,0 +1,88 @@
+﻿@model SmartLoan.ViewModels.GroupLoanTakenViewModel
+@{
+    ViewData["Title"] = "Loan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .loan-table-div{
+        max-height: 590px;
+        overflow-y:scroll;
+        overflow-x: hidden;
+    }
+</style>
+
+@functions{
+    int id = 1;
+    public int GenerateId()
+    {
+        return id++;
+    }
+    public bool LoanTaken(int groupId)
+    {
+        return Model.LoanTakenList.Contains(groupId);
+    }
+}
+
+
+<h3 class="my-3"> Loan Plan</h3>
+
+<div class="loan-table-div">
+    <table class="table table-striped text-center pt-3" id="datatable-id">
+        <thead class="table-primary">
+            <tr>
+                <td>
+                    Serial
+                </td>
+                <td>
+                    Group Name
+                </td>
+                <td>
+                    Group Location
+                </td>
+                <td>
+                    Actions
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var group in Model.GroupInfos)
+            {
+                <tr>
+                    <td>
+                        @GenerateId()
+                    </td>
+                    <td>
+                        @group.Name
+                    </td>
+                    <td>
+                        @group.Location
+                    </td>
+                    <td class="w-25">
+                        <div class="d-flex">
+                            @if (LoanTaken(group.Id))
+                            {
+                                <span class="py-2 px-4 bg-warning rounded-2 me-2 cursor-not-allowed"> In progress </span>
+                            }
+                            else
+                            {
+                                <a class="btn btn-primary me-2" asp-controller="Loan" asp-action="Plan" asp-route-id="@group.Id"> Loan Planning </a>
+                            }                           
+                            <a class="btn btn-info" asp-controller="Group" asp-action="ViewMembers" asp-route-id="@group.Id"> View Member </a>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(()=>{
+            const datatable = $("#datatable-id").DataTable();
+        });
+    </script>
+}
+

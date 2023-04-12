@@ -1,0 +1,89 @@
+﻿@model SmartLoan.ViewModels.UserAndInstallmentDetailsViewModel;
+
+@{
+    Layout = null;
+}
+
+@functions{
+    string? currentGroupName = null;
+    int id = 0;
+    string SetGroupName(string name)
+    {
+        currentGroupName = name;
+        return currentGroupName;
+    }
+    bool IsSameGroup(string name)
+    {
+        return currentGroupName == name;
+    }
+    int GetIndex()
+    {
+        return id++;
+    }
+    bool IsFullySubmitted(double amount1,double amount2)
+    {
+        return amount1 == amount2;
+    }
+}
+
+
+<div class="d-flex justify-content-between">
+    <h4> Name: @Model.User.UserName</h4>
+    <h4> Email: @Model.User.Email </h4>
+</div>
+
+@for(int i=0;i<@Model.InstallmentMasters.Count();i++){
+    <hr/>
+    <div class="mt-2">
+        <h3> Group Name: @SetGroupName(Model.InstallmentMasters.ElementAt(i).LoanMaster.Loan.GroupInfo.Name) </h3>
+        <table class="table table-striped text-center pt-2" id="table-@GetIndex()">
+            <thead class="table-primary">
+                <tr>
+                    <td> Installment Number </td>
+                    <td> Loan Id</td>
+                    <td> Expected Amount </td>
+                    <td> Collected Amount </td>
+                    <td> Submitted Amount(Office) </td>
+                    <td> Fully Submitted </td>
+                </tr>
+            </thead>
+            <tbody>
+                @while (i < @Model.InstallmentMasters.Count() && @IsSameGroup(@Model.InstallmentMasters.ElementAt(i).LoanMaster.Loan.GroupInfo.Name))
+                {
+                    <tr>
+                        <td> @Model.InstallmentMasters.ElementAt(i).InstallmentNumber </td>
+                        <td> @Model.InstallmentMasters.ElementAt(i).LoanMaster.Loan.LoanId</td>
+                        <td> @Model.InstallmentMasters.ElementAt(i).ExpectedAmount</td>
+                        <td> @Model.InstallmentMasters.ElementAt(i).CollectedAmount</td>
+                        <td> @Model.InstallmentMasters.ElementAt(i).SubmittedAmountToOffice</td>
+                        <td> 
+                            @if(IsFullySubmitted(@Model.InstallmentMasters.ElementAt(i).CollectedAmount, @Model.InstallmentMasters.ElementAt(i).SubmittedAmountToOffice)){
+                                <span class="px-3 py-2 text-info"> Yes</span>    
+                            }else{
+                                <span class="px-3 py-2 text-warning"> No</span>
+                            }    
+                        </td>
+                    </tr>
+                    i++;
+                }
+                @if (i < @Model.InstallmentMasters.Count() && !@IsSameGroup(@Model.InstallmentMasters.ElementAt(i).LoanMaster.Loan.GroupInfo.Name)){
+                    i--;
+                }
+               </tbody>
+        </table>
+    </div>
+}
+
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        console.log(@id);
+         for(let i=0;i<@id;i++){
+            console.log(`#table-${i}`);
+            $(`#table-${i}`).DataTable( {
+                pageLength : 5,
+                lengthMenu: [[5, 10, 20], [5, 10, 20]]
+            });
+         }
+    });
+</script>

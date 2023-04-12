@@ -1,0 +1,62 @@
+﻿@model List<CollectorReport>
+
+<table class="table table-striped table-hover pt-2 text-center" id="collectorReportTable">
+    <thead>
+        <tr class="table-primary">
+            <th>Installment Number</th>
+            <th>Group Name</th>
+            <th>Payment Method</th>
+            <th>Submittor Name</th>
+            <th>Collection Date</th>
+            <th>Received Amount</th>
+            <th>Submitted Amount To Office</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var report in Model)
+        {
+            <tr>
+                <td>@report.InstallmentNumber</td>
+                <td>@report.GroupName</td>
+                @if (report.PaymentMethod == MagicNumber.CashPayment)
+                {
+                    <td>Cash</td>
+                }
+                else
+                {
+                    <td>Online</td>
+                }
+                <td>@report.SubmittorName</td>
+                <td>@report.CollectionDate.ToShortDateString()</td>
+                <td>@string.Format("{0:n0}", report.ReceivedAmount)</td>
+                <td>@string.Format("{0:n0}", report.SubmittedAmountToOffice)</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr class="table-dark fw-bold text-start">
+            @{
+                double totalReceived = 0, totalSubmittedToOffice = 0;
+                foreach (var report in Model)
+                {
+                    totalReceived += report.ReceivedAmount;
+                    totalSubmittedToOffice += report.SubmittedAmountToOffice;
+                }
+                <td colspan="5">Total Amount : </td>
+                <td class="text-center">@string.Format("{0:n0}", @totalReceived)</td>
+                <td class="text-center">@string.Format("{0:n0}", @totalSubmittedToOffice)</td>
+            }
+        </tr>
+    </tfoot>
+</table>
+
+
+
+
+<script src="~/lib/datatables/js/jquery.datatables.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#collectorReportTable').DataTable();
+    });
+</script>

@@ -1,0 +1,35 @@
+﻿@model SmartLoan.ViewModels.LoanOfficeSubmissionFormViewModel;
+
+
+@functions{
+    int index = 0;
+    public int IncreaseIndex()
+    {
+        return index++;
+    }
+}
+
+<form method="post" asp-action="ReceiveOfficePayment" asp-controller="Loan">
+    @foreach (var installment in Model.InstallmentDetails)
+    {
+        <input asp-for="@Model.InstallmentIds[index]" value="@installment.Id" hidden/>
+        <input value="@IncreaseIndex()" hidden/>
+    }
+    <div class="mb-3">
+            <label> Amount to Submit </label>
+            <input asp-for="@Model.TotalAmount" type="number" value="@Model.TotalAmount" class="form-control readonly-input" readonly/>
+        </div>
+        <div class="mb-3">
+            <label> Submitted to </label>
+            <select asp-for="@Model.UserId" class="form-select" asp-items="@Model.Users">
+            </select>
+        </div>
+        <div class="mb-3">
+            <label> Submission Method</label>
+            <select asp-for="@Model.PaymentId" class="form-select" asp-items="@Model.PaymentMethods">
+            </select>
+        </div>
+        <div class="text-center mb-3">
+            <button class="btn btn-primary" type="submit"> Collect </button>
+        </div>
+</form>

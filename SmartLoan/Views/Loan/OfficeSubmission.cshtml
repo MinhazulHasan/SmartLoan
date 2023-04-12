@@ -1,0 +1,78 @@
+﻿@model SmartLoan.ViewModels.OfficeSubmissionViewModel
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> _userManager; 
+@{
+    ViewData["Title"] = "OfficeSubmission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public bool shouldDisable(double amount)
+    {
+        return amount == 0;
+    }
+    public double amountToPay(double a,double b)
+    {
+        return a - b;
+    }
+}
+
+<style>
+    #submission-form{
+        width: 35%;
+        margin: 0 auto;
+    }
+</style>
+
+
+<section class="container">
+
+    <div class="d-flex justify-content-between text-success">
+            <h5> Group Name: @Model.GroupInfo.Name </h5>
+            <h5> Loan Id: @Model.LoanMaster.Loan.LoanId </h5>
+            @{
+            var user = await _userManager.FindByIdAsync(Model.InstallmentMaster.CollectorId);
+            }
+            <h5> Submitter Name: @user.UserName  </h5>
+    </div>
+
+    <hr/>
+
+    <h3 class="p-3 text-warning text-center">Installment Office Submission</h3>
+    <div id="submission-form">
+        <form method="post" asp-action="ReceiveOfficePayment" asp-controller="Loan">
+            <input asp-for="@Model.SubmitterId" value="@Model.InstallmentMaster.CollectorId" hidden/>
+            <input asp-for="@Model.InstallmentMasterId" value="@Model.InstallmentMaster.Id" hidden/>
+            <input asp-for="@Model.LoanMasterId" value="@Model.LoanMaster.Id" hidden/>
+            
+            <div class="mb-3">
+                <label> Amount to Submit </label>
+                <input asp-for="@Model.AmountSubmitted" value="@amountToPay(Model.InstallmentMaster.CollectedAmount,Model.InstallmentMaster.SubmittedAmountToOffice)" type="number"  class="form-control readonly-input" readonly />
+            </div>
+            <div class="mb-3">
+                <label> Submitted to </label>
+                <select asp-for="@Model.CollectorId" class="form-select" asp-items="@Model.UsersList">
+                </select>
+            </div>
+            <div class="mb-3">
+                <label> Submission Method</label>
+                <select asp-for="@Model.PaymentMethodId" class="form-select" asp-items="@Model.PaymentList">
+                </select>
+            </div>
+            <div class="text-center mb-3">
+                @if (shouldDisable(Model.InstallmentMaster.CollectedAmount - Model.InstallmentMaster.SubmittedAmountToOffice))
+                {
+                    <button class="btn btn-secondary" type="submit" disabled title="Submission is not allowed"> Collect </button>
+                }
+                else{
+
+                    <button class="btn btn-primary" type="submit" > Collect </button>
+                }
+
+            </div>
+        </form>
+
+    </div>
+</section>
+
+

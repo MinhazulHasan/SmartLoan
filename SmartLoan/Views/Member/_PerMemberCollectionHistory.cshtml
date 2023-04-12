@@ -1,0 +1,165 @@
+﻿@model SmartLoan.ViewModels.CollectionHistoryViewModel
+@{
+    ViewData["Title"] = "perMemberCollectionHistory";
+    Layout = null;
+}
+
+@functions {
+    int id = 1;
+    public int IndexGenerate()
+    {
+        return id++;
+    }
+}
+
+<head>
+    <link href="~/lib/datatables/css/jquery.datatables.css" rel="stylesheet" />
+</head>
+
+<table class="table table-light mb-5 fw-bold">
+    <tbody>
+        <tr>
+            <td class="h3 fw-bold">Name: @Model.MemberInfo.Name</td>
+            <td>NID: @Model.MemberInfo.Nid</td>
+            <td>Passport Num: @Model.MemberInfo.PassportNum</td>
+        </tr>
+        <tr>
+            <td>Father's Name: @Model.MemberInfo.FatherName</td>
+            <td>Mother's Name: @Model.MemberInfo.MotherName</td>
+            <td>Occupation: @Model.MemberInfo.Occupation</td>
+        </tr>
+        <tr>
+            <td>Mobile Number: @Model.MemberInfo.MobileNumber</td>
+            <td>Date of Birth: @Model.MemberInfo.BirthDate.Value.ToShortDateString()</td>
+            <td>Address: @Model.MemberInfo.Address</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="accordion mb-4" id="accordionPanelsStayOpenExample">
+    @{
+        int i = 1;
+        foreach (var grpCollection in Model.CollectionReports)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
+
+                        <div class="row py-2 text-center fw-bold w-100">
+                            <div class="col h5 fw-bold">Group: @grpCollection.GroupName</div>
+                        </div>
+
+                    </button>
+                </h2>
+
+                <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
+                    <div class="accordion-body">
+                        <table id="allGroups" class="table table-striped table-hover pt-2 text-center">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>#</th>
+                                    <th>Collector Name</th>
+                                    <th>Collection Date</th>
+                                    <th>Pay in Cash</th>
+                                    <th>Pay in Digital</th>
+                                    <th>Due Payment</th>
+                                    <th>Total Collection</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 1;
+                                    foreach (var collection in grpCollection.MemberCollection)
+                                    {
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@collection.CollectorName</td>
+                                            <td>@collection.CollectionDate.Value.ToShortDateString()</td>
+                                            <td>@string.Format("{0:n0}", collection.CashPayment)</td>
+                                            <td>@string.Format("{0:n0}", collection.OnlinePayment)</td>
+                                            <td>@string.Format("{0:n0}", collection.DuePayment)</td>
+                                            <td>@string.Format("{0:n0}", collection.CollectionAmount)</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                            </tbody>
+                            <tfoot class="table-primary fw-bolder">
+                                <tr>
+                                    <td>Total</td>
+                                    <td colspan="2"></td>
+                                    <td>@string.Format("{0:n0}", grpCollection.TotalPayInCash)</td>
+                                    <td>@string.Format("{0:n0}", grpCollection.TotalOnlinePay)</td>
+                                    <td>@string.Format("{0:n0}", grpCollection.TotalDue)</td>
+                                    <td>@string.Format("{0:n0}", grpCollection.TotalDeposit)</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            i++;
+        }
+    }
+</div>
+
+
+
+@*@if (Model.SingleUserCollectionHiistories.Count != 0)
+{
+    <table id="collectionTable" class="table table-striped table-hover pt-2">
+        <thead class="text-center">
+            <tr class="table-primary">
+                <th>Sl No.</th>
+                <th>Collection Date</th>
+                <th>Collected By</th>
+                <th>Pay in Cash</th>
+                <th>Online Pay</th>
+                <th>Due</th>
+                <th>Total Pay</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @{
+                var index = 1;
+                foreach (var record in Model.SingleUserCollectionHiistories)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@record.CollectionDate.Value.ToShortDateString()</td>
+                        <td>@record.CollectorName</td>
+                        <td>@string.Format("{0:n0}", record.CashPayment)</td>
+                        <td>@string.Format("{0:n0}", record.OnlinePayment)</td>
+                        <td>@string.Format("{0:n0}", record.DuePayment)</td>
+                        <td>@string.Format("{0:n0}", record.CollectionAmount)</td>
+                    </tr>
+                    index++;
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr class="table-dark fw-bold text-start">
+                <td colspan="3">Total Amount : </td>
+                <td class="text-center">@string.Format("{0:n0}", Model.TotalPayInCash)</td>
+                <td class="text-center">@string.Format("{0:n0}", Model.TotalOnlinePay)</td>
+                <td class="text-center">@string.Format("{0:n0}", Model.TotalDue)</td>
+                <td class="text-center">@string.Format("{0:n0}", Model.TotalDeposit)</td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <h1 class="text-center fw-bold text-danger pt-5">
+        This member has not deposited anything yet !!!
+    </h1>
+}*@
+
+<script src="~/lib/datatables/js/jquery.datatables.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#collectionTable').DataTable();
+    });
+</script>

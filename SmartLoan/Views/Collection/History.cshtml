@@ -1,0 +1,36 @@
+﻿@model List<SelectListItem>
+
+@{
+    ViewData["Title"] = "Collection History for collector";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center mt-2">
+    <h3 class="fw-bold">Select Collector</h3>
+    <select id="collectors" name="id" asp-items="Model" class="w-25 py-4">
+       <option value="0">--Select Collector--</option>
+    </select>
+     <button class="btn btn-primary" id="show-button"> Show </button>
+
+    <div id="tablePartial"></div>
+</div>
+
+
+
+@section Scripts
+    {
+        <script type="text/javascript">
+            $(document).ready(function (){
+                $("#collectors").select2();
+                $("#show-button").on("click",function () {
+
+                    let collector = document.getElementById("collectors");
+                    let id = collector.value;
+                $.get("OfficeCollectionPerCollector/"+id, function (content) {
+                    $("#tablePartial").html(content);
+                });
+                });
+            
+            });
+        </script>
+}

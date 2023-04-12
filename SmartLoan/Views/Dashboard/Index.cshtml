@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-primary text-center border-1">Dashborad</h1>
+
+<div class="container-fluid row vh-100">
+    <div class="col-4 bg-primary d-flex flex-column align-items-center justify-content-center">
+        <h4 class="text-white mb-3"> Email: @User.Identity.Name  </h4>
+        <a asp-action="Logout" asp-controller="RegistrationAndLogin" class="btn btn-danger"> Logout </a>
+        <h3> </h3>
+    </div>
+    <div class="col-8 bg-light">
+        <div class="row flex-column h-100 justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <div class="row">
+                    <div class="col-6">
+                        <a class="btn btn-primary p-5 mr-5 w-100"> User Ragistration </a>
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-primary p-5 mr-5 w-100"> Create Group </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-center mt-5">
+                <div class="row">
+                    <div class="col-6">
+                        <a asp-action="Index" asp-controller="Collection" class="btn btn-primary p-5 mr-5 w-100"> Collection </a>
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-primary p-5 mr-5 w-100"> See Groups </a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

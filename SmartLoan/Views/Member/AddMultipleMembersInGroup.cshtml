@@ -1,0 +1,100 @@
+﻿@model SmartLoan.ViewModels.GroupWithMemberViewModel
+@{
+    ViewData["Title"] = "AddMultipleMembersInGroup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center mt-2">
+    <select id="ddlGroup" name="GroupId" asp-items="@Model.Groups" class="w-25 d-inline-block py-2 text-center">
+        <option value="0">--- Select Group ---</option>
+    </select>
+    &nbsp;
+    <button class="btn btn-primary w-25 pt-2" id="submit-btn"> Submit</button>
+</div>
+
+<div class="table-responsive my-4">
+    <table class="table table-striped table-hover pt-2 align-middle" id="members-table">
+        <thead>
+            <tr class="table-primary text-center">
+                <th>#</th>
+                <th>Name</th>
+                <th>Father's Name</th>
+                <th>NID Num</th>
+                <th>Birthdate</th>
+                <th>Mobile Num</th>
+                <th>View Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model.MemberInfos)
+            {
+                <tr class="text-center">
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" data-id="@member.Id" value="" id="flexCheckChecked" />
+                        </div>
+                    </td>
+                    <td>@member.Name</td>
+                    <td>@member.FatherName</td>
+                    <td>@member.Nid</td>
+                    <td>@member.BirthDate.Value.ToShortDateString()</td>
+                    <td>@member.MobileNumber</td>
+                    <td>
+                        <a asp-route-id="@member.Id" asp-action="SingleMemberDetails" asp-controller="Member" class="anchor-link bi bi-view-list"> Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#ddlGroup").select2();
+            let memberIdArray = []
+            let groupId;
+
+            $(".form-check-input").on("click", function (e) {
+                let id = Number.parseInt(e.target.dataset.id);
+                if(e.target.checked) {
+                    memberIdArray.push(id);
+                }
+                else{
+                    memberIdArray = memberIdArray.filter(function (item) {
+                        return item !== id;
+                    })
+                }
+                console.log("Members Id :" + memberIdArray);
+            });
+
+            $("#submit-btn").on("click", function () {
+                let group = document.getElementById("ddlGroup");
+                groupId = group.value;
+                console.log(groupId)
+
+                if(groupId == 0)
+                    bootbox.alert("Please Select A Group First");
+                else if(memberIdArray.length == 0)
+                    bootbox.alert("Please Select Members You Wanna Add");
+                else{
+                    $.ajax({
+                        type: "POST",
+                        url: "/Api/Members",
+                        data: {
+                            GroupId: groupId,
+                            MemberIds: memberIdArray
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            bootbox.alert(response.value, () => window.location.reload());
+                        }
+                    });
+                }
+            });
+            
+        });
+    </script>
+}

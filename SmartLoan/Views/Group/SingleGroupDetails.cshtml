@@ -1,0 +1,28 @@
+﻿@model SmartLoan.ViewModels.SingleGroupViewModel
+@{
+    ViewData["Title"] = "SingleGroupDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="p-5 mt-5 d-flex justify-content-around">
+        <div>
+            <h4>Group Name: @Model.GroupInfo.Name</h4>
+            <hr />
+            <h6>Group ID: @Model.GroupInfo.Id</h6>
+            <h6>Created by: @Model.GroupInfo.GroupCreatorName</h6>
+            @if(Model.MemberInfo != null)
+            {
+                <h6>Group Leader: @Model.MemberInfo.Name</h6>
+            }
+            <h6>Group Location: @Model.GroupInfo.Location</h6>
+            <h6>Group Started: @Model.GroupInfo.GroupStart.ToLongDateString()</h6>
+            <h6>Amount To Deposit: @Model.GroupInfo.AmountToDeposit</h6>
+            <h6>Submission Period of Deposit: @Model.SubmissionPeriod.Title</h6>
+            <a asp-action="ViewGroups" asp-controller="Group" class="btn btn-outline-dark btn-sm bi bi-skip-backward-fill mt-3"> Back To Group List</a>
+        </div>
+        <div class="text-end">
+            <img src="~/images/undraw_community_re_cyrm.svg" alt="Not Found" class="w-50" />
+        </div>
+    </div>
+</div>

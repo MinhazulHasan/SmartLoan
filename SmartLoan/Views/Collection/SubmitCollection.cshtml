@@ -1,0 +1,61 @@
+﻿@model SmartLoan.ViewModels.OfficeCollectionViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> _userManager
+@{
+    ViewData["Title"] = "Submit Collection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var user = await _userManager.FindByIdAsync(Model.SingleCollection.CollectorId);
+    string collector = user.UserName;
+}
+
+@functions{
+    public bool shouldDisable(double amount)
+    {
+        return amount == 0.0;
+    }
+    public double subtract(double a,double b)
+    {
+        return Math.Abs(a-b); 
+    }
+}
+
+<h3> Collector Name: @collector </h3>
+<div class="d-flex justify-content-between border border-2 p-2 border-primary">
+    <h4> Total Collection: @Model.SingleCollection.CollectedAmount/- </h4>
+    <h4> Amount in Cash: @Model.SingleCollection.PaymentInCash/- </h4>
+    <h4> Online: @Model.SingleCollection.PaymentOnline/- </h4>
+    <h5> Collection Date: @Model.SingleCollection.CollectionDate </h5>
+</div>
+
+<div class="d-flex justify-content-center">
+    <form class="w-25" asp-action="SubmitCollection" asp-controller="Collection" method="post">
+        <input asp-for="@Model.OfficeCollectionDto.GroupInfoId" value="@Model.SingleCollection.GroupInfoId" hidden/>
+        <input asp-for="@Model.OfficeCollectionDto.CollectionId" value="@Model.SingleCollection.Id" hidden/>
+        <input asp-for="@Model.OfficeCollectionDto.SubmitterId" value="@user.Id" hidden/>
+
+        @{
+            bool shoudlDisable = shouldDisable(subtract(@Model.SingleCollection.PaymentInCash, @Model.SingleCollection.OfficeSubmittedAmount));
+        }
+
+        <div class="my-3">
+            <label> Amount to submit: </label>
+            <input asp-for="@Model.OfficeCollectionDto.Amount"
+                   class="form-control" max="@subtract(@Model.SingleCollection.PaymentInCash,@Model.SingleCollection.OfficeSubmittedAmount)"
+                   min="1" value="@subtract(@Model.SingleCollection.PaymentInCash,@Model.SingleCollection.OfficeSubmittedAmount)" disabled="@shoudlDisable" />
+        </div>
+        <div class="my-3">
+            <label> Submited To </label>
+            <select asp-for="@Model.OfficeCollectionDto.CollectorId" class="form-select" asp-items="@Model.CollectorList" disabled="@shoudlDisable">
+            </select>
+        </div>
+        <div class="my-3">
+            <label> Payment methods: </label>
+            <select asp-for="@Model.OfficeCollectionDto.PaymentMethod" class="form-select" asp-items="@Model.PaymentMethod" disabled="@shoudlDisable">
+
+            </select>
+        </div>
+        <button class="btn btn-primary" disabled="@shoudlDisable"> Submit </button>
+    </form>
+</div>

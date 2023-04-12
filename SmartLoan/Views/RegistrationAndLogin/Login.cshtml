@@ -1,0 +1,143 @@
+﻿@model LoginCredential
+@{
+    ViewData["Title"] = "Registration Page";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartLoan</title>
+
+    @* ++++++++++++++++++ Bootstrap ++++++++++++++++++*@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @* ++++++++++++++++++ Custom CSS ++++++++++++++++++*@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SmartLoan.styles.css" asp-append-version="true" />
+
+    @* ++++++++++++++++++ Custom CSS ++++++++++++++++++*@
+    <link href="~/lib/datatables/css/jquery.datatables.css" rel="stylesheet" />
+
+    @* ++++++++++++++++++ Bootstrap Icons CDN ++++++++++++++++++*@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+
+    <style>
+        .gradient-custom-2 {
+            /* fallback for old browsers */
+            background: #fccb90;
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to right, rgb(149, 165, 166), rgb(44, 62, 80));
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to right, rgb(149, 165, 166), rgb(44, 62, 80));
+        }
+
+        @@media (min-width: 768px) {
+            .gradient-form {
+                height: 100vh !important;
+            }
+        }
+
+        @@media (min-width: 769px) {
+            .gradient-custom-2 {
+                border-top-right-radius: .3rem;
+                border-bottom-right-radius: .3rem;
+            }
+        }
+        body{
+            height: 0;
+            max-width: 100%;
+        }
+        .login-section{
+            border-radius: .5rem .5rem 0 0;
+            width: 100vw;
+            height: 100vh;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+    <section class="container login-section">
+      <div class="row d-flex justify-content-center">
+        <div class="col-12">
+          <div class="rounded-3 text-black">
+            <div class="row g-0">
+              <div class="col-lg-6">
+                <div class="card-body mx-md-4">
+
+                  <div class="text-center">
+                    <img src="~/images/loan.png" style="width: 150px;" alt="logo">
+                    <h4 class="mt-1 mb-3 pb-1">We are The SmartLoan Team</h4>
+                  </div>
+                   
+                  <form method="post" asp-controller="RegistrationAndLogin" asp-action="Login" class="p-3">
+                    @if (TempData["Login-failed"] != null) {
+                       <p class="fw-bolder text-danger">
+                            @TempData["Login-failed"]
+                       </p>
+                   }
+                    @if (TempData["Email-Confirmed"] != null)
+                    {
+                        <p class="fw-bolder text-danger">
+                            @TempData["Email-Confirmed"]
+                        </p>
+                    }
+                    <div class="form-outline mb-2">
+                        <label class="form-label" asp-for="Email" style="margin-left: 0px;"></label>
+                        <input type="email" asp-for="Email" class="form-control" placeholder="Phone number or email address">
+                        <span class="text-danger" asp-validation-for="Email"></span>
+                     </div>
+
+                     <div class="form-outline mb-2">
+                        <label asp-for="Password" class="form-label" style="margin-left: 0px;"></label>
+                        <input  asp-for="Password" class="form-control" placeholder="Your password">
+                        <span class="text-danger" asp-validation-for="Password"></span>
+                     </div>
+
+                    <div class="text-center pt-1 mb-2 pb-1">
+                      <button class="btn btn-secondary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Log
+                        in</button>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-center pb-4">
+                      <p class="mb-0 me-2">Forget Password?</p>
+                      <a asp-action="Registration" asp-controller="RegistrationAndLogin" class="btn btn-outline-secondary">Click here</a>
+                    </div>
+
+                  </form>
+
+                </div>
+              </div>
+              <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                  <h4 class="mb-4">We are more than just a company</h4>
+                  <p class="small mb-0">We’re in Alabama, Illinois, Missouri, Nevada, New Mexico, Oklahoma, and Texas offering extra help, whatever your financial needs — with service and loan terms that help get you on your way.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ </section>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* ++++++++++++++++++ DataTable JS ++++++++++++++++++*@
+    <script src="~/lib/datatables/js/jquery.datatables.js"></script>
+
+    @* ++++++++++++++++++ Bootbox.min.JS ++++++++++++++++++*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.min.js" integrity="sha512-U3Q2T60uOxOgtAmm9VEtC3SKGt9ucRbvZ+U3ac/wtvNC+K21Id2dNHzRUC7Z4Rs6dzqgXKr+pCRxx5CyOsnUzg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    @* ++++++++++++++++++ Bootbox.JS ++++++++++++++++++*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.js" integrity="sha512-OMYI9iOelB12PWdWHfU6XouDuUvszFZEywO4W9KFJGP3aj/nP5UECd5ctMqRm+/9Qk3oOFqhbXVi6cJAqlAUuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>

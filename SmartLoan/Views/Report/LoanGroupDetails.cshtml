@@ -1,0 +1,95 @@
+﻿@model IEnumerable<LoanMasterReport>
+@{
+    ViewData["Title"] = "LoanGroupDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="fw-bold">Loan Report</h3>
+
+<div class="container-fluid">
+    <div class="row py-3 text-center fw-bold h6 border rounded bg-primary text-light">
+        <div class="col">Loan Name</div>
+        <div class="col">Expected Amount</div>
+        <div class="col">Collected Amount</div>
+        <div class="col">Create</div>
+        <div class="col">Last Update</div>
+        <div class="col">Total Installment</div>
+        <div class="col">Complete Installment</div>
+        <div class="col">Status</div>
+    </div>
+</div>
+
+<div class="accordion mb-4" id="accordionPanelsStayOpenExample">
+    @{
+        int i = 1;
+        foreach (var masterReport in Model)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
+
+                        <div class="row py-2 text-center fw-bold w-100">
+                            <div class="col">@masterReport.LoanName</div>
+                            <div class="col">@string.Format("{0:n0}", masterReport.ExpectedTotalAmount)</div>
+                            <div class="col">@string.Format("{0:n0}", masterReport.CollectedTotalAmount)</div>
+                            <div class="col">@masterReport.CreationDate.ToShortDateString()</div>
+                            <div class="col">@masterReport.UpdatedDate.ToShortDateString()</div>
+                            <div class="col">@masterReport.InstallmentCount</div>
+                            <div class="col">@masterReport.InstallmentComplete</div>
+                            <div class="col">
+                                @if (masterReport.InProgress)
+                                {
+                                    <span class="text-warning bi bi-speedometer"> Running</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success bi bi bi-x-octagon"> Closed</span>
+                                }
+                            </div>
+                        </div>
+
+                    </button>
+                </h2>
+
+                <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
+                    <div class="accordion-body">
+                        <table id="allGroups" class="table table-striped table-hover pt-2 text-center">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>Group Name</th>
+                                    <th>Member Name</th>
+                                    <th>Amount</th>
+                                    <th>Period</th>
+                                    <th>Installment</th>
+                                    <th>Interest</th>
+                                    <th>Processing Fee</th>
+                                    <th>Others Charge</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var details in masterReport.LoanDetailsReports)
+                                {
+                                    <tr>
+                                        <td>@details.GroupName</td>
+                                        <td>@details.MemberName</td>
+                                        <td>@string.Format("{0:n0}", details.Amount)</td>
+                                        <td>@details.Period</td>
+                                        <td>@details.Installment</td>
+                                        <td>@details.InterestRate %</td>
+                                        <td>@string.Format("{0:n0}", details.ProcessingFee)</td>
+                                        <td>@string.Format("{0:n0}", details.OtherCharge)</td>
+                                        <td>@string.Format("{0:n0}", details.TotalAmount)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            i++;
+        }
+    }
+</div>
+
+

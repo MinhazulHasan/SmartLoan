@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "SelectCollector";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center mt-2">
+    <select id="selectedCollector" name="CollectorId" asp-items="Model" class="w-25 d-inline-block py-2 text-center">
+        <option value="0">--- Select Collector ---</option>
+    </select>
+    <button class="btn btn-primary pt-1" id="view-record"> View Record</button>
+
+    <div id="collector-report" class="mt-4 text-start"></div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#selectedCollector").select2();
+            $("#view-record").on("click", function () {
+                let collector = document.getElementById("selectedCollector");
+                let id = collector.value;
+                $.get("/report/CollectorReport/"+id, function (content) {
+                    $("#collector-report").html(content);
+                });
+            });
+        });
+    </script>
+}

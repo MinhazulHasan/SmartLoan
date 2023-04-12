@@ -1,0 +1,172 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SigninManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartLoan</title>
+
+    @* ++++++++++++++++++ Bootstrap ++++++++++++++++++*@
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
+    <link rel="stylesheet" href="~/css/BootsWatchTheme.css" />
+
+    @* ++++++++++++++++++ Custom CSS ++++++++++++++++++*@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SmartLoan.styles.css" asp-append-version="true" />
+
+    @* ++++++++++++++++++ DataTable CSS ++++++++++++++++++*@
+    <link href="~/lib/datatables/css/jquery.datatables.css" rel="stylesheet" />
+    
+    @* ++++++++++++++++++ Toastr Alert CSS ++++++++++++++++++*@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+    @* ++++++++++++++++++ Bootstrap Icons CDN ++++++++++++++++++*@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+
+    @* ++++++++++++++++++ Selecr2 CSS CDN ++++++++++++++++++*@
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body class="main-body">
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="left-section border-end bg-primary d-flex flex-column justify-content-between align-items-center sidebar-width position-relative" id="sidebar-wrapper">
+            <div class="pt-3">
+                <div>
+                    <img src="~/images/loan.png" alt="Loan Icon" class="loan-img" />
+                </div>
+                <h5 class="mt-1 text-light fw-bold logo-position">SMART LOAN</h5>
+            </div>
+            <div class="list-group list-group-flush w-100">
+                <a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Home" asp-action="Index"> <i class="bi bi-house-fill"></i> &nbsp; Home</a>
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100 text-start ps-4 bg-transparent dropdown-custom border-1 border-bottom border-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-fill"></i>&nbsp; Member
+                    </button>
+                    <ul class="dropdown-menu text-end right-0 p-0 drop-down-shadow" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Member" asp-action="AllMembers"> <i class="bi bi-people-fill"></i> &nbsp; Members</a></li>
+                        <li><a class="dropdown-item list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Member" asp-action="Index"> <i class="bi bi-person-bounding-box"></i> &nbsp; Member History</a></li>
+                    </ul>
+                </div>
+
+                <a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Group" asp-action="ViewGroups"> <i class="bi bi-microsoft-teams"></i> &nbsp; Groups</a>
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100 text-start ps-4 bg-transparent dropdown-custom border-1 border-bottom border-light" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-collection"></i>&nbsp; Collection
+                    </button>
+                    <ul class="dropdown-menu text-end right-0 p-0 drop-down-shadow" aria-labelledby="dropdownMenuButton2">
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Collection" asp-action="Index"> <i class="bi bi-wallet-fill"></i> &nbsp; Collection</a></li>
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Collection" asp-action="History"> <i class="bi bi-cash"></i> &nbsp; Collection History</a></li>
+                    </ul>
+                </div>
+                
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100 text-start ps-4 bg-transparent dropdown-custom border-1 border-bottom border-light" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bank"></i>&nbsp; Loan
+                    </button>
+                    <ul class="dropdown-menu text-end right-0 p-0 drop-down-shadow" aria-labelledby="dropdownMenuButton3">
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Loan" asp-action="Index">&nbsp;<i class="bi bi-stars text-warning"></i> Loan Plan <i class="bi bi-stars text-warning"></i></a></li>
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Installment" asp-action="Index">&nbsp;<i class="bi bi-bank2"></i> &nbsp; Installment</i></a></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100 text-start ps-4 bg-transparent dropdown-custom border-1 border-bottom border-light" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-clipboard-data-fill"></i>&nbsp; Report
+                    </button>
+                    <ul class="dropdown-menu text-end right-0 p-0 drop-down-shadow" aria-labelledby="dropdownMenuButton4">
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Report" asp-action="AllGroups">&nbsp; <i class="bi bi-building-fill-check"></i> &nbsp; Group History Report </a></li>
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Report" asp-action="SelectMembers">&nbsp;<i class="bi bi-person-vcard-fill"></i> &nbsp; Member Report</i></a></li>
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Report" asp-action="SelectCollector">&nbsp;<i class="bi bi-person-circle"></i> &nbsp; Office Collection Report</i></a></li>
+                        <li><a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Report" asp-action="LoanCollection">&nbsp;<i class="bi bi-person-circle"></i> &nbsp; Loan Collections Report</i></a></li>
+                    </ul>
+                </div>
+                
+                <a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="User" asp-action="Index"> <i class="bi bi-person-fill-gear"></i> &nbsp;System Users</a>
+
+                <a class="list-group-item list-group-item-action px-4 py-2 bg-primary text-bg-info border-1 border-bottom border-light" asp-area="" asp-controller="Home" asp-action="Privacy"> <i class="bi bi-shield-fill-check"></i> &nbsp; Privacy</a>
+            </div>
+
+            <div>
+                 <ul class="navbar-nav ms-auto mt-2 mb-4 mt-lg-0">
+                       @if (!SigninManager.IsSignedIn(User))
+                        {
+                        <li class="nav-item mb-1 mx-auto">
+                                <a class="btn btn-secondary px-4" asp-area="" asp-controller="RegistrationAndLogin" asp-action="Registration">Registration</a>
+                            </li>
+                            <li class="nav-item mb-2 mx-auto">
+                                <a class="btn btn-success px-5" asp-area="" asp-controller="RegistrationAndLogin" asp-action="Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item mb-2 mx-auto">
+                                <a class="btn btn-danger px-5" asp-area="" asp-controller="RegistrationAndLogin" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                   </ul>
+            </div>
+        </div>
+
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper" class="flex-fill right-section">
+
+            <!-- NavBar -->
+            <div class="bg-primary text-end pe-4 top-nav-fixed">
+                @if (SigninManager.IsSignedIn(User))
+                {
+                    <div class="dropdown">
+                        <button class="dropbtn"><i class="bi bi-caret-down-fill"></i> @User.Identity.Name</button>
+                        <div class="dropdown-content">
+                            <a asp-action="UserProfile" asp-controller="User">View Profile</a>
+                            <a asp-action="ChangePassword" asp-controller="User">Change Password</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="fw-bold text-light py-2 px-5">Guest</p>                    
+                }
+            </div>
+
+            <!-- Page content-->
+            <div class="container-fluid w-100 mt-5">
+                <main role="main" class="pb-3 mt-4 pt-3">
+                    <partial name="_Notification" />
+                    @RenderBody()
+                </main>
+            </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+
+    @* ++++++++++++++++++ JQuery Min JS ++++++++++++++++++*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    @* ++++++++++++++++++ JS Bootstrap Bundle ++++++++++++++++++*@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* ++++++++++++++++++ Custom JS ++++++++++++++++++*@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* ++++++++++++++++++ DataTable JS ++++++++++++++++++*@
+    <script src="~/lib/datatables/js/jquery.datatables.js"></script>
+
+    @* ++++++++++++++++++ Bootbox.min.JS ++++++++++++++++++*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.min.js" integrity="sha512-U3Q2T60uOxOgtAmm9VEtC3SKGt9ucRbvZ+U3ac/wtvNC+K21Id2dNHzRUC7Z4Rs6dzqgXKr+pCRxx5CyOsnUzg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    @* ++++++++++++++++++ Bootbox.JS ++++++++++++++++++*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.js" integrity="sha512-OMYI9iOelB12PWdWHfU6XouDuUvszFZEywO4W9KFJGP3aj/nP5UECd5ctMqRm+/9Qk3oOFqhbXVi6cJAqlAUuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    @* ++++++++++++++++++ Select2.JS Minified ++++++++++++++++++*@
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

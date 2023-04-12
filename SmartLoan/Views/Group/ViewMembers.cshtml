@@ -1,0 +1,66 @@
+﻿@model SmartLoan.ViewModels.MemberInfoWithGroupViewModel
+@{
+    ViewData["Title"] = "ViewMembers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row py-2">
+    <div class="col-6">
+        <h3 class="text-primary">Group Members</h3>
+    </div>
+    <div class="col-6 text-end">
+        <a asp-action="ViewGroups" asp-controller="Group" class="btn btn-secondary"> <i class="bi bi-skip-backward-fill"></i> Back to Group List</a>
+        <a asp-action="AddMember" asp-controller="Member" class="btn btn-primary" asp-route-id="@Model.GroupId"> <i class="bi bi-plus-circle"></i> Add New Member</a>
+    </div>
+</div>
+
+@if(Model.MemberInfos.Count() != 0)
+{
+    <table class="table table-striped table-hover pt-2" id="membersTable">
+        <thead>
+            <tr class="table-primary text-center">
+                <th>Name</th>
+                <th>Father's Name</th>
+                <th>NID Num</th>
+                <th>Birthdate</th>
+                <th>Mobile Num</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model.MemberInfos)
+            {
+                <tr class="text-center">
+                    <td>@member.Name</td>
+                    <td>@member.FatherName</td>
+                    <td>@member.Nid</td>
+                    <td>@member.BirthDate.Value.ToShortDateString()</td>
+                    <td>@member.MobileNumber</td>
+                    <td>
+                        <a asp-route-id="@member.Id" asp-action="SingleMemberDetails" asp-controller="Member" class="anchor-link bi bi-view-list"> Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h1 class="text-center fw-bold text-danger pt-5">
+        No members have been added to this group yet !!!
+    </h1>
+    <h3 class="text-center fw-bold pt-2">
+        Click Add New Member button for creating a member
+    </h3>
+}
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //var js = jQuery.noConflict(true);
+        $(document).ready(function () {
+            $('#membersTable').DataTable();
+        });
+    </script>
+}

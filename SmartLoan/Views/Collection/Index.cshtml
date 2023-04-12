@@ -1,0 +1,180 @@
+﻿@model SmartLoan.ViewModels.CollectionViewModel
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> _userManager
+
+
+@{
+    ViewData["Title"] = "Collection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    int id = 1;
+    public int IncrementByOne()
+    {
+        return id++;
+    }
+}
+
+<style>
+    .action-link-width{
+        min-width:200px;
+    }
+</style>
+
+
+<div class="text-end">
+    <!-- Button trigger modal -->
+    <div class="d-flex justify-content-between">
+        <h3>  Table of collections: </h3>
+        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-plus-square"></i> Create Collection
+        </button>
+    </div>
+    <hr />
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create Collection form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                   <form asp-action="Create" asp-controller="Collection">
+                       <div class="my-3">
+                           <label asp-for="@Model.CollectionDto.CollectionId" class="form-label"> Collection ID </label>
+                           <input asp-for="@Model.CollectionDto.CollectionId" class="form-control" placeholder="Please enter a collection Id"/>
+                       </div>
+                        <div class="my-3">
+                            <label asp-for="@Model.CollectionDto.GroupNameId" class="form-label"> Select Group </label>
+                            <select id="js-group-id" asp-for="@Model.CollectionDto.GroupNameId" class="form-select" asp-items="@Model.ListItem"></select>
+                        </div>
+                        <div class="my-3">
+                            <label asp-for="@Model.CollectionDto.CollectionDate" class="form-label"> Collection Date </label>
+                            <input asp-for="@Model.CollectionDto.CollectionDate" type="datetime-local" class="form-control" /> 
+                        </div>
+                        <div class="my-3">
+                            <label asp-for="@Model.CollectionDto.CollectorId"> Select a collector </label>
+                            <select id="js-collector-id" asp-for="@Model.CollectionDto.CollectorId" asp-items="@Model.CollectorList" class="form-select">
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                   </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="collection-datatable" class="table table-striped table-hover text-center pt-3">
+    <thead class="table-primary">
+        <tr>
+            <td>Id</td>
+            <td>
+                Collection Id
+            </td>
+            <td>
+                Group Name
+            </td>
+            <td>
+                Collector Name
+            </td>
+            <td>
+                Collection Date
+            </td>
+            <td>
+                Creation Date
+            </td>
+
+            <td>
+                Status and Action
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Collections)
+        {
+
+             var user = await _userManager.FindByIdAsync(item.CollectorId);
+             string name;
+             if(user == null)
+             {
+                name = "No Collector";
+             }
+             else
+             {
+                name = user.UserName;
+             }
+
+            <tr>
+                <td> @IncrementByOne() </td>
+                <td>@item.CollectionId</td>
+                <td> @item.GroupInfo.Name </td>
+                <td>  @name </td>
+                <td>@item.CollectionDate</td>
+                <td>@item.CreationDate</td>
+                <td>
+                @if (item.Status.Id == 1)
+                {
+                     <a class="btn btn-danger action-link-width" asp-action="Details" asp-controller="Collection" asp-route-id="@item.Id"> <i class="bi bi-emoji-frown"></i> Due</a>
+                }
+                else if(item.Status.Id == 2)
+                {
+                    <a class="btn btn-warning action-link-width" asp-action="Details" asp-controller="Collection" asp-route-id="@item.Id"> <i class="bi bi-emoji-angry"></i> Partially Collected</a>
+                }
+                else
+                {
+                    <a class="btn btn-success action-link-width" asp-action="Details" asp-controller="Collection" asp-route-id="@item.Id"> <i class="bi bi-emoji-laughing"></i> Collected</a>
+                }
+                  <a asp-controller="Collection" asp-action="SubmitCollection" asp-route-id="@item.Id" class="btn btn-info"> <i class="bi bi-wallet2"></i> </a>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#collection-datatable').DataTable();
+        });
+        /*
+        const group = document.getElementById("js-group-id");
+        const collector = document.getElementById("js-collector-id");
+        group.addEventListener("change",async (event)=>{
+            console.log(group.value);
+            await fetch(`https://localhost:7087/Api/Collectors/${group.value}`,{
+                method: "GET"
+            }).then((response)=>{
+                if(response.ok){
+                    return response.json();
+                }else{
+                    throw Error("Api Error!")
+                }
+            }).then((result)=>{
+                const values = result.value;
+                while (collector.lastElementChild) {
+                    collector.removeChild(collector.lastElementChild);
+                }
+                for(let value of values){
+                    let child = document.createElement("option");
+                    child.value = value.id;
+                    child.innerText = value.name;
+                    collector.appendChild(child);
+                }
+            }).catch((message)=>{
+                console.log(message);
+            })
+
+        });
+        */
+
+    </script>
+    
+}

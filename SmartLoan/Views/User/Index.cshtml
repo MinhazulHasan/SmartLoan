@@ -1,0 +1,94 @@
+﻿@model SmartLoan.ViewModels.UserAndRoleViewModel;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> _userManager;
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    public async Task<string> GetRoleName(IdentityUser user,List<IdentityRole> roles)
+    {
+        foreach(var role in roles)
+        {
+            if (await _userManager.IsInRoleAsync(user, role.Name))
+            {
+                return role.Name.ToString();   
+            }
+        }
+        return "No Role";
+    }
+    public bool IsActive(string userId)
+    {
+        foreach(var session in Model.UserLoginSessions)
+        {
+            if(session.UserId == userId && session.Active)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+<section class="container px-3">
+    <div class="d-flex justify-content-between">
+        <h3> System Users </h3>
+        <div class="text-end">
+            <h3> Total System Users: <span class="text-info">@Model.Users.Count</span> </h3>
+            @if(User.IsInRole("Admin")){
+                <a asp-controller="RegistrationAndLogin" asp-action="Registration" class="btn btn-primary my-2 text-capitalize"> <i class="bi bi-plus-circle-dotted"></i> &nbsp; Create a system user </a>
+            }
+        </div>
+        
+    </div>
+    <table class="table table-striped text-center pt-3" id="users-table">
+        <thead class="table-primary">
+            <tr>
+                <td> User Name </td>
+                <td> Email </td>
+                <td> Role </td>
+                <td> Status </td>
+                @if (Model.IsAdminUser)
+                {
+                    <td> Action </td>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var user in Model.Users){
+                <tr>
+                    <td> @user.UserName </td>
+                    <td> @user.Email </td>
+                    <td> @GetRoleName(user,Model.Roles).Result</td>
+                    @if (IsActive(user.Id))
+                    {
+                        <td class="active-color"> <i class="bi bi-brightness-high-fill"></i> Active </td>
+                        @if (Model.IsAdminUser)
+                        {
+                            <td> <a asp-action="ToggleStatus" asp-controller="User" asp-route-id="@user.Id" class="btn btn-warning"> Make Inactive </a> </td>
+                        }
+                    }
+                    else
+                    {
+                        <td class="inactive-color"> <i class="bi bi-lightbulb-off"></i> Inactive </td>
+                        @if (Model.IsAdminUser)
+                        {
+                            <td> <a asp-action="ToggleStatus" asp-controller="User" asp-route-id="@user.Id" class="btn btn-success px-3"> Make Active </a> </td>     
+                        }
+                    }
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $("#users-table").DataTable();
+        });
+    </script>
+}

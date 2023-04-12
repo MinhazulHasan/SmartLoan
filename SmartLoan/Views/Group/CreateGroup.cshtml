@@ -1,0 +1,57 @@
+﻿@model SmartLoan.ViewModels.NewGroupInfoViewModel
+@{
+    ViewData["Title"] = "CreateGroup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" class="row g-3 p-5 border m-3 shadow-lg rounded posted-form">
+    <h3 class="text-primary">Create Group</h3>
+    <div class="col-md-6">
+        <label asp-for="GroupInfo.Name" class="form-label">Group Name</label>
+        <input asp-for="GroupInfo.Name" type="text" class="form-control" placeholder="Enter Group Name" />
+        <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="GroupInfo.Location" class="form-label">Group Location</label>
+        <input asp-for="GroupInfo.Location" type="text" class="form-control" placeholder="Enter Group Location" />
+        <span asp-validation-for="GroupInfo.Location" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="GroupInfo.GroupStart" class="form-label">Time to create the group</label>
+        <input asp-for="GroupInfo.GroupStart" type="date" class="form-control" placeholder="Enter Group Start Time" />
+        <span asp-validation-for="GroupInfo.GroupStart" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        @Html.LabelFor(m => m.GroupInfo.GroupLeaderId)
+        @Html.DropDownListFor(m => m.GroupInfo.GroupLeaderId, new SelectList(Model.MemberInfo, "Id", "Name"), "Select Group Leader", new { @class="form-control mt-2", disabled = "true" })
+        @Html.ValidationMessageFor(m => m.GroupInfo.GroupLeaderId )
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="GroupInfo.AmountToDeposit" class="form-label">Amount To Deposit</label>
+        <input asp-for="GroupInfo.AmountToDeposit" type="number" class="form-control" placeholder="Enter Amount To Deposit" />
+        <span asp-validation-for="GroupInfo.AmountToDeposit" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        @Html.LabelFor(m => m.GroupInfo.SubmissionPeriodId)
+        @Html.DropDownListFor(m => m.GroupInfo.SubmissionPeriodId, new SelectList(Model.SubmissionPeriod, "id", "Title"), "Select Submission Period", new { @class="form-control mt-2" })
+        @Html.ValidationMessageFor(m => m.GroupInfo.SubmissionPeriodId )
+    </div>
+
+    <input asp-for="GroupInfo.GroupCreatorName" type="text" class="form-control" hidden />
+
+    <div class="col-12 text-end">
+        <a asp-action="ViewGroups" asp-controller="Group" class="btn btn-secondary bi bi-skip-backward-fill"> Back to List</a>
+        <button type="submit" class="btn btn-info bi bi-plus-square"> Create Group</button>
+    </div>
+</form>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

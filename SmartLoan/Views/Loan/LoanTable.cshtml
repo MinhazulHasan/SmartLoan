@@ -1,0 +1,283 @@
+﻿@model SmartLoan.ViewModels.LoanPlanViewModel
+
+@{
+    ViewData["Title"] = "Loan form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions {
+    int id = 1;
+    int index = 0;
+    public int GenerateId()
+    {
+        return id++;
+    }
+    public int IndexIncreaseByOne()
+    {
+        return index++;
+    }
+}
+
+<style>
+
+    .loan-planning-section {
+        max-height 590px;
+        width: 100%;
+        overflow-y: scroll;
+    }
+    .text-size-12px{
+        font-size:12px;
+    }
+    .input-size {
+        width: 70px;
+        text-align: center;
+    }
+    .hidden{
+        display: none;
+    }
+
+    .table-head tr td{
+        font-size: 16px;
+    }
+
+    #datatable-id{
+        overflow-y:scroll;
+        overflow-x:hidden;
+    }
+
+</style>
+
+
+
+<section class="loan-planning-section">
+    <div class="d-flex justify-content-between py-3">
+        <h3> Loan Id: @Model.Loan.LoanId </h3>
+        <h3> Group Name: @Model.GroupInfo.Name </h3>
+    </div>
+
+    <form asp-controller="Loan" asp-action="CreateLoanDetails" method="post" id="loan-details-form">
+
+<table class="table text-center pt-3" id="datatable-id">
+    <thead class="table-primary table-head">
+        <tr>
+            <td>
+                #
+            </td>
+            <td>
+                Member Name
+            </td>
+            <td>
+                Amount
+            </td>
+            <td>
+                Period(Months)
+            </td>
+            <td>
+               Installment(Days)
+            </td>
+            <td> 
+                Total Installment
+            </td>
+            <td>
+                Interest Rate
+            </td>
+            <td>
+                Processing Fees
+            </td>
+            <td>
+                Other Charge
+            </td>
+            <td>
+                Total Interest
+            </td>
+            <td>
+                Total Amount
+            </td>
+            <td>
+                Total Fees
+            </td>
+            <td>
+                Amount Per Installment
+            </td>
+        </tr>
+    </thead>
+
+    <tbody>
+                @foreach (var member in Model.MemberInfos)
+                {
+                    <input asp-for="@Model.LoanDetails[index].LoanMasterId"  value="@Model.LoanMaster.Id" hidden/>
+                    <input asp-for="@Model.LoanDetails[index].GroupInfoId" value="@Model.Loan.GroupInfoId" hidden />
+                    <input asp-for="@Model.LoanDetails[index].MemberInfoId" value="@member.Id" hidden/>
+
+                    <tr class="text-size-12px">
+                        <td>
+                            @GenerateId()
+                        </td>
+                        <td>
+                            @member.Name
+                        </td>
+                        <td class="amount" data-index="@index">
+                            <input asp-for="@Model.LoanDetails[index].Amount" data-index="@index" type="number" class="input-size" min="1" value="6000" />
+                        </td>
+                        <td class="period">
+                            <input asp-for="@Model.LoanDetails[index].Period" data-index="@index" type="number" class="input-size" min="1" value="6" />
+                        </td>
+                        <td class="installment-days">
+                            <input id="installmentInDays-@index" data-index="@index" type="number" class="input-size" min="1" value="14" max="30" />
+                        </td>
+                        <td class="installment">
+                            <input asp-for="@Model.LoanDetails[index].Installment" data-index="@index" type="number" class="input-size readonly-input" min="1" value="12" readonly />
+                        </td>
+                        <td class="interest-rate">
+                            <input asp-for="@Model.LoanDetails[index].InterestRate" data-index="@index" type="number" class="input-size" min="1" value="10" />
+                        </td>
+                        <td class="processing-fee">
+                            <input asp-for="@Model.LoanDetails[index].ProcessingFee" data-index="@index" type="number" class="input-size" min="0" value="100" />
+                        </td>
+                        <td class="other-charge">
+                            <input asp-for="@Model.LoanDetails[index].OtherCharge" data-index="@index" type="number" class="input-size" min="0" value="100" />
+                        </td>
+
+                        <td class="total-interest">
+                            <input id="total-interest-@index" data-index="@index" class="input-size readonly-input" value="600" readonly>
+                        </td>
+
+                        <td class="toal-amount">
+                            <input asp-for="@Model.LoanDetails[index].TotalAmount" data-index="@index" class="input-size readonly-input" value="6600" readonly>
+                        </td>
+                        <td class="total-fee">
+                            <div class="d-flex justify-content-between">
+                                <input title="Add with total amount" type="checkbox" id="checkbox-@index" class="me-1 plus-box" data-index="@index"/> <input asp-for="@Model.LoanDetails[index].TotalFee" data-index="@index" class="input-size readonly-input" value="200" readonly />
+                            </div>
+
+                        </td>
+                        <td class="amount-per-installment">
+                            <input asp-for="@Model.LoanDetails[index].AmountPerInstallment" data-index="@index" class="input-size readonly-input" value="550" readonly />
+                        </td>
+                    </tr>
+                    <input value="@IndexIncreaseByOne()" hidden/>
+                }
+            </tbody>
+
+</table>
+    <button type="submit" class="btn btn-info"> Submit </button>
+    </form>
+</section>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        const table = $("#datatable-id");
+        const datatable = table.DataTable();
+
+        // Prevent form submission onpress "Enter"
+        $('#loan-details-form').on('keyup keypress', function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+  
+        $(document).ready(()=>{
+
+            const primaryHelper = (index) => {
+                let amount = $(`#LoanDetails_${index}__Amount`).val();
+                let interestRate = $(`#LoanDetails_${index}__InterestRate`).val();
+                let period = $(`#LoanDetails_${index}__Period`).val();
+                let installmentInDays = Number.parseInt($(`#installmentInDays-${index}`).val());
+               
+                let totalDays = 30 * Number.parseInt(period);
+                let totalInstallment = Math.floor(totalDays / installmentInDays);
+
+                let totalInterest = amount * Number.parseFloat(interestRate) / 100;
+                let totalAmount = Math.ceil(Number.parseInt(amount) + totalInterest);
+                let perInstallmentAmount = Math.ceil(Number.parseInt(totalAmount) / totalInstallment);
+                console.log(totalAmount,perInstallmentAmount);
+                $(`#LoanDetails_${index}__TotalAmount`).val(totalAmount);
+                $(`#LoanDetails_${index}__AmountPerInstallment`).val(perInstallmentAmount);
+                $(`#LoanDetails_${index}__Installment`).val(totalInstallment);
+                $(`#total-interest-${index}`).val(totalInterest);
+            }
+
+            const processingAndOtherfeeHelper = (index) => {
+
+                let processingFee = Number.parseInt($(`#LoanDetails_${index}__ProcessingFee`).val());
+                let otherChage = Number.parseInt($(`#LoanDetails_${index}__OtherCharge`).val());
+
+                let toalFees = processingFee + otherChage;
+
+                $(`#LoanDetails_${index}__TotalFee`).val(toalFees);
+            }
+
+
+            const updatePerInstallment = (index) => {
+                const totalInstallment = Number.parseInt($(`#LoanDetails_${index}__Installment`).val());
+                const totalAmount = Number.parseInt($(`#LoanDetails_${index}__TotalAmount`).val());
+                const perInstallment = Math.ceil(Number.parseFloat(totalAmount / totalInstallment));
+                $(`#LoanDetails_${index}__AmountPerInstallment`).val(perInstallment);
+            }
+
+
+            $(".amount").on("change keypress", (event) => {
+                let index = event.target.dataset.index;
+                primaryHelper(index);
+            });
+
+
+            $(".period").on("change keypress", (event) => {
+                let index = event.target.dataset.index;
+                primaryHelper(index);
+            });
+
+            $(".installment-days").on("change keypress", (event) => {
+                let index = event.target.dataset.index;
+                primaryHelper(index);
+            });
+
+            $(".interest-rate").on("change keypress", (event) => {
+                let index = event.target.dataset.index;
+                primaryHelper(index);
+            });
+
+            $(".processing-fee").on("change keypress", (event) => {
+                let index = event.target.dataset.index;
+                processingAndOtherfeeHelper(index);
+            });
+
+            $(".other-charge").on("change keypress", (event) => {
+                let index = event.target.dataset.index;
+                processingAndOtherfeeHelper(index);
+            });
+
+            $(".plus-box").on("click",(event) => {
+
+                let checked = event.target.checked;
+                let index = Number.parseInt(event.target.dataset.index);
+
+                if(checked){
+                    let amount = Number.parseFloat($(`#LoanDetails_${index}__Amount`).val());
+                    let interestRate = Number.parseFloat($(`#LoanDetails_${index}__InterestRate`).val());
+                    let totalInterest = amount * interestRate / 100;
+                    let totalFee = Number.parseFloat($(`#LoanDetails_${index}__TotalFee`).val());
+                    let totalAmount = Math.ceil(amount + totalInterest + totalFee);
+                    $(`#LoanDetails_${index}__TotalAmount`).val(totalAmount);
+                }else{
+                    let processingFee = Number.parseFloat($(`#LoanDetails_${index}__ProcessingFee`).val());
+                    let otherFee = Number.parseFloat($(`#LoanDetails_${index}__OtherCharge`).val());
+                    let totalAmount = Number.parseFloat($(`#LoanDetails_${index}__TotalAmount`).val());
+                    let totalFee =  Number.parseFloat(processingFee + otherFee);
+                    let newtotalAmount = Number.parseFloat(totalAmount - totalFee);
+                    
+                    $(`#LoanDetails_${index}__TotalAmount`).val(newtotalAmount);
+                    $(`#LoanDetails_${index}__TotalFee`).val(totalFee);
+                }
+                
+                updatePerInstallment(index);
+                
+                
+            })
+        });
+    </script>
+}

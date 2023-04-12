@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "SelectMembers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center mt-2">
+    <select id="selectedMember" name="MemberId" asp-items="Model" class="w-25 d-inline-block py-2 text-center">
+        <option value="0">--- Select Member ---</option>
+    </select>
+    <select id="selectedGroup" name="GroupId" class="w-25 d-inline-block py-2 text-center">
+        <option value="0">--- Select Group ---</option>
+    </select>
+    <button class="btn btn-primary pt-1" id="view-record"> View Record</button>
+
+    <div id="member-report" class="mt-4 text-start"></div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#selectedMember").select2();
+            $("#selectedGroup").select2();
+
+            $("#selectedMember").on("change", function() {
+                let id = $(this).val();
+                $("#selectedGroup").empty();
+                $.getJSON('/Api/Members/GetGroups/' + id, (data) => {
+                    $.each(data, function (i, item) {
+                        $("#selectedGroup").append(`<option value="${item.value}">${item.text}</option>`);
+                    });
+                });
+            })
+
+            $("#view-record").on("click", function () {
+                let member = document.getElementById("selectedMember");
+                let memberId = member.value;
+                let group = document.getElementById("selectedGroup");
+                let groupId = group.value;
+                $.get("/report/MemberReport/" + memberId + "/" + groupId, function (content) {
+                    $("#member-report").html(content);
+                });
+            });
+        });
+    </script>
+}

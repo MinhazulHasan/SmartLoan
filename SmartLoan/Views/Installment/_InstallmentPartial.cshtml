@@ -1,0 +1,44 @@
+﻿@model SmartLoan.ViewModels.InstallmentPopUpViewModel
+
+<!-- Modal -->
+<div class="modal fade" id="installmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Installment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="CreateInstallmentDetails" asp-controller="Installment">
+
+                    <div class="my-3">
+                        <label asp-for="@Model.LoanMaster.InstallmentCount" class="form-label"> Installment Number </label>
+                        <input asp-for="@Model.LoanMaster.InstallmentCount" class="form-control" value="@(Model.LoanMaster.InstallmentComplete+1)" readonly />
+                        <span asp-validation-for="@Model.LoanMaster.InstallmentCount" class="text-danger"></span>
+                    </div>
+
+                    <div class="my-3">
+                        <label asp-for="@Model.LoanMaster.CreationDate" class="form-label"> Collection Date </label>
+                        <input asp-for="@Model.LoanMaster.CreationDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="@Model.LoanMaster.CreationDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="my-3">
+                        <label > Select a collector </label>
+                        <select asp-for="@Model.CollectorId" id="js-collector-id"  class="form-select" asp-items="@Model.CollectorList">
+                        </select>
+                        <span asp-validation-for="@Model.CollectorId" class="text-danger"></span>
+                    </div>
+
+                    <input asp-for="@Model.LoanMaster.GroupInfoId" class="form-control" hidden />
+                    <input asp-for="@Model.LoanMaster.LoanId" class="form-control" hidden />
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

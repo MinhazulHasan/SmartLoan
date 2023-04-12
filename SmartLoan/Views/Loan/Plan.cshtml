@@ -1,0 +1,52 @@
+﻿@model SmartLoan.Models.Loan
+
+@{
+    ViewData["Title"] = "Plan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .loan-planning-section{
+        height: 400px;
+        width: 100%;
+    }
+
+    .input-size{
+        width:70px;
+        text-align:right;
+    }
+
+    .form-style{
+        width: 400px;
+        height:350px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px 2px black;
+        margin-top: 40px;
+    }
+
+</style>
+
+<section class="d-flex justify-content-center align-items-center">
+    <div class="loan-planning-section d-flex justify-content-center align-items-center flex-column form-style">
+        <h3 class="text-primary text-center mt-5">Loan Plan</h3>
+        <h6 class="text-start fw-bold text-success"> Group Name: @Model.GroupInfo.Name </h6>
+        <form asp-controller="Loan" asp-action="CreateLoanId" method="post">
+            <input asp-for="@Model.GroupInfoId" value="@Model.GroupInfoId" hidden />
+            <div class="my-3">
+                <label asp-for="@Model.LoanId"> </label>
+                <input asp-for="@Model.LoanId" class="form-control" placeholder="Enter a loan Id"/>
+                <span asp-validation-for="@Model.LoanId" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary"> Create </button>
+        </form>
+    </div>
+
+    <div id="loan-table">
+
+    </div>
+</section>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

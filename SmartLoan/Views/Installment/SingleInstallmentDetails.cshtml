@@ -1,0 +1,139 @@
+﻿@model SmartLoan.ViewModels.InstallmentDetailsAndListViewModel
+@{
+    ViewData["Title"] = "SingleInstallmentDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions{
+    int id = 1;
+    int index = 0;
+    public int GenerateId()
+    {
+        return id++;
+    }
+    public int IndexIncrement()
+    {
+        return index++;
+    }
+    public bool shouldDisable(int status)
+    {
+        return status != 1;
+    }
+
+}
+
+<style>
+    .w-100px{
+        width: 100px !important;
+    }
+</style>
+
+
+<form method="post" asp-action="UpdateInstallment" asp-controller="Installment" id="installment-details-form">
+<table class="table table-striped table-hover pt-2" id="singleInstallmentTable">
+    <thead>
+        <tr class="table-primary text-center">
+            <th> Serial </th>
+            <th> Name </th>
+            <th> Father's Name </th>
+            <th> Nid </th>
+            <th>Installment Amount</th>
+            <th>Amount to received</th>
+            <th>Penalty</th>
+            <th>Due</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var installment in Model.InstallmentDetails)
+        {
+            <input asp-for="@Model.InstallmentsList[index].Id" value="@installment.Id" hidden/>
+            <input asp-for="@Model.InstallmentsList[index].LoanId" value="@installment.LoanId" hidden />
+            <input asp-for="@Model.InstallmentsList[index].LoanMasterId" value="@installment.LoanMasterId" hidden />
+            <input asp-for="@Model.InstallmentsList[index].CollectorId" value="@installment.CollectorId" hidden />
+            <input asp-for="@Model.InstallmentsList[index].MemberInfoId" value="@installment.MemberInfoId" hidden />
+            <input asp-for="@Model.InstallmentsList[index].StatusId" value="@installment.StatusId" hidden />
+            <input asp-for="@Model.InstallmentsList[index].InstallmentMasterId" value="@installment.InstallmentMasterId" hidden />
+            <input asp-for="@Model.InstallmentsList[index].InstallmentDate" value="@installment.InstallmentDate" hidden />
+            <input asp-for="@Model.InstallmentsList[index].ReceivedDate" value="@installment.ReceivedDate" hidden />
+            <input asp-for="@Model.InstallmentsList[index].InstalllmentNumber" value="@installment.InstalllmentNumber" hidden />
+            <input asp-for="@Model.InstallmentsList[index].GroupId" value="@installment.GroupId" hidden />
+
+            <tr class="text-center">
+                <td>@GenerateId()</td>
+                <td> @installment.MemberInfo.Name </td>
+                <td> @installment.MemberInfo.FatherName </td>
+                <td> @installment.MemberInfo.Nid </td>
+                <td>
+                        <input asp-for="@Model.InstallmentsList[index].InstallmentAmount" value=@installment.InstallmentAmount id="total-installment-@index" class="readonly-input w-100px" readonly />
+                </td>
+                <td class="received-amount">
+                        <input asp-for="@Model.InstallmentsList[index].ReceivedAmount" data-index="@index" class="text-center w-100px" type="number" min="0" value="@installment.InstallmentAmount" />
+                </td>
+                <td>
+                        <input asp-for="@Model.InstallmentsList[index].PenaltyCharge" class="text-center w-100px" min="0" value="0" />
+                </td>
+                <td>
+                        <input asp-for="@Model.InstallmentsList[index].DueAmount" class="text-center readonly-input w-100px" min="0" value="@installment.DueAmount" readonly/>
+                </td>
+                <td>
+                    @if (installment.StatusId == MagicNumber.Due)
+                    {
+                        <i class="px-3 py-2 bg-danger action-link-width"> <i class="bi bi-emoji-frown"></i> Due</i>
+                    }
+                    else if (installment.StatusId == MagicNumber.PartiallyCollected)
+                    {
+                            <i class="px-3 py-2 bg-warning action-link-width"> <i class="bi bi-emoji-angry"></i> Partially Collected</i>
+                    }
+                    else
+                    {
+                            <i class="px-3 py-2 bg-success action-link-width"> <i class="bi bi-emoji-laughing"></i> Collected</i>
+                    }
+                </td>
+            </tr>
+                <input value="@IndexIncrement()" hidden />
+        }
+        </tbody>
+</table>
+    @if (shouldDisable(Model.InstallmentMaster.StatusId))
+    {
+        <button type="submit" class="btn btn-warning cursor-not-allowed" disabled> Submit </button> <span class="text-secondary"> Submission is not allowed </span>
+    }else{
+        <button type="submit" class="btn btn-primary"> Submit </button>
+    }
+   
+</form>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //var js = jQuery.noConflict(true);
+        $(document).ready( function () {
+            $('#singleInstallmentTable').DataTable();
+
+            
+        // Prevent form submission onpress "Enter"
+        $('#installment-details-form').on('keyup keypress', function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+
+
+            $(".received-amount").on("keypress change",(event) => {
+                console.log(event);
+                const index = event.target.dataset.index;
+                const receivedAmount =  Number.parseInt($(`#InstallmentsList_${index}__ReceivedAmount`).val());
+                const totalAmount = Number.parseInt($(`#total-installment-${index}`).val());
+                const dueAmount = totalAmount - receivedAmount;
+                $(`#InstallmentsList_${index}__DueAmount`).val(dueAmount);
+            })
+
+
+        } );
+    </script>
+}

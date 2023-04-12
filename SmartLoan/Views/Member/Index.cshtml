@@ -1,0 +1,32 @@
+﻿@model SelectList
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center mt-2">
+    <select id="ddlMembers" name="MemberId" asp-items="Model" class="w-25 d-inline-block py-2">
+        <option value="0">--Select Member--</option>
+    </select>
+    <button class="btn btn-primary pt-1" id="view-record"> View Record</button>
+
+    <div id="per-member-pertial-table" class="mt-4"></div>
+</div>
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#ddlMembers").select2();
+            $("#view-record").on("click", function () {
+                let member = document.getElementById("ddlMembers");
+                let id = member.value;
+                $.get("member/PerMemberCollectionHistory/"+id, function (content) {
+                    $("#per-member-pertial-table").html(content);
+                });
+            });
+        });
+    </script>
+}

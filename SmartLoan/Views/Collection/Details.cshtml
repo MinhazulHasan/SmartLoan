@@ -1,0 +1,127 @@
+﻿@model SmartLoan.ViewModels.CollectionUpdateViewModel
+
+@{
+    ViewData["Title"] = "Collection Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@functions{
+    int id = 1;
+    public int IncrementByOne()
+    {
+        return id++;
+    }
+    public double sum(double a,double b)
+    {
+        return a + b;
+    }
+    public bool shouldDisable(double amount)
+    {
+        return amount == 0;
+    }
+}
+
+<style>
+    .submit:disabled {
+        cursor:not-allowed!important;
+    }
+    input{
+        width:100px;
+    }
+    .status-width{
+        max-width: 200px;
+        border-radius: 5px;
+    }
+</style>
+
+@if (Model.NoCollector == null)
+{
+    <div>
+        <h3 class="text-primary"> Collector Name: @Model.CollectorInfo.UserName </h3>    
+    </div>
+}
+else
+{
+    <div>
+        <h3 class="text-warning"> @Model.NoCollector </h3>
+    </div>
+}
+<hr/>
+<div class="d-flex justify-content-between align-items-center" >
+
+    <h4> Collection Table </h4>
+    <div class="d-flex gap-3">
+        <div class="d-flex flex-row gap-2 justify-content-center">
+            <h4 class="text-center text-primary"> Expected Amount: @Model.Collection.EstimateAmount </h4>
+            <h4 class="text-center text-success"> Collected Amount: @Model.Collection.CollectedAmount </h4>
+        </div>
+    </div>
+    <a asp-action="Index" asp-controller="Collection" class="btn btn-outline-primary fw-bold d-inline-block mb-3"> <i class="bi bi-skip-backward"></i> Go Back </a>
+</div>
+
+<hr />
+
+<table id="collection-details-datatable" class="table table-striped table-hover pt-3 text-center">
+    <thead class="table-primary">
+        <tr>
+            <td>Id</td>
+            <td> Collection Id </td>
+            <td> Member's Name </td>
+            <td> Father's Name </td>
+            <td> Amount to Pay </td>
+            <td> Total Amount </td>
+            <td> Status </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var details in Model.CollectionDetails)
+        {
+            <tr>
+                <td> @IncrementByOne() </td>
+                <td> @Model.Collection.CollectionId </td>
+                <td> <a asp-controller="Member" asp-action="SingleMemberDetails" asp-route-id="@details.MemberInfo.Id">@details.MemberInfo.Name</a> </td>
+                <td> @details.MemberInfo.FatherName </td>
+                <td>
+                    <form asp-action="Update" asp-controller="Collection" method="post">
+                        <input asp-for="@Model.CollectionUpdate.Route" type="hidden" value="@Model.CollectionUpdate.Route"/>
+                         <input asp-for="@Model.CollectionUpdate.Id" type="hidden" value="@details.Id"/>
+                         <input asp-for="@Model.CollectionUpdate.Amount" class="input-amount" type="number" value="@sum(details.AmountToPay,details.LateFee)" max="@sum(details.AmountToPay,details.LateFee)" min="0" disabled="@shouldDisable(details.AmountToPay)" />
+                        <select asp-for="@Model.CollectionUpdate.PaymentId" asp-items="@Model.PaymentMethodListItem" disabled="@shouldDisable(details.AmountToPay)">
+
+                         </select>
+                        @if (shouldDisable(details.AmountToPay))
+                        {
+                            <button type="submit" class="btn btn-primary submit" disabled="@shouldDisable(details.AmountToPay)"> <i class="bi bi-slash-circle"></i> Update  </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary submit" disabled="@shouldDisable(details.AmountToPay)"> <i class="bi bi-arrow-up-circle"></i> Update  </button>
+                        }
+                    </form>
+                 </td>
+                 <td> @Model.TotalAmount </td>
+                 <td>
+                @if(details.StatusId == 1)
+                {
+                    <p class="py-2 px-4 bg-danger text-white status-width text-center"> <i class="bi bi-emoji-frown"></i> Due</p>
+                }else if(details.StatusId == 2)
+                {
+                    <p class="py-2 px-4 bg-warning text-dark status-width text-center"> <i class="bi bi-emoji-angry"></i> Partially Collected</p>
+                }
+                else
+                {
+                    <p class="py-2 px-4 bg-success text-white status-width text-center"> <i class="bi bi-emoji-laughing"></i> Collected</p>
+                }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(()=>{
+            $("#collection-details-datatable").DataTable();
+        });
+    </script>
+}
+

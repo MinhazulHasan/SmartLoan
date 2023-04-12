@@ -1,0 +1,151 @@
+﻿@model SmartLoan.ViewModels.NewMemberInfoViewModel
+@{
+    ViewData["Title"] = "AddMember";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" class="row g-3 p-3 border m-3 mb-4 shadow-lg rounded posted-form">
+    <h3 class="text-primary text-center">Member Registration Form</h3>
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.Name" class="form-label">Name <span class="text-danger">*</span></label>
+        <input asp-for="MemberInfo.Name" type="text" class="form-control" placeholder="Enter Name" />
+        <span asp-validation-for="MemberInfo.Name" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.BirthDate" class="form-label">Birthdate</label>
+        <input asp-for="MemberInfo.BirthDate" type="date" class="form-control" placeholder="Enter Birthdate" />
+        <span asp-validation-for="MemberInfo.BirthDate" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.Nid" class="form-label">NID Number <span class="text-danger">*</span></label>
+        <input asp-for="MemberInfo.Nid" type="text" class="form-control" placeholder="Enter NID Number" />
+        <span asp-validation-for="MemberInfo.Nid" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.PassportNum" class="form-label">Passport Number</label>
+        <input asp-for="MemberInfo.PassportNum" type="text" class="form-control" placeholder="Enter Passport Number" />
+        <span asp-validation-for="MemberInfo.PassportNum" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.MobileNumber" class="form-label">Phone Number</label>
+        <input asp-for="MemberInfo.MobileNumber" type="text" class="form-control" placeholder="Enter Phone Number" />
+        <span asp-validation-for="MemberInfo.MobileNumber" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.Occupation" class="form-label">Occupation</label>
+        <input asp-for="MemberInfo.Occupation" type="text" class="form-control" placeholder="Enter Your Occupation" />
+        <span asp-validation-for="MemberInfo.Occupation" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.FatherName" class="form-label">Father's Name</label>
+        <input asp-for="MemberInfo.FatherName" type="text" class="form-control" placeholder="Enter Your Father's Name" />
+        <span asp-validation-for="MemberInfo.FatherName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.MotherName" class="form-label">Mother's Name</label>
+        <input asp-for="MemberInfo.MotherName" type="text" class="form-control" placeholder="Enter Your Father's Name" />
+        <span asp-validation-for="MemberInfo.MotherName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-12">
+        <label asp-for="MemberInfo.Address" class="form-label">Address</label>
+        <input asp-for="MemberInfo.Address" type="text" class="form-control" placeholder="Enter Your Address" />
+        <span asp-validation-for="MemberInfo.Address" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.HeighestEducationalLevel" class="form-label">Last Educational Degree</label>
+        <input asp-for="MemberInfo.HeighestEducationalLevel" type="text" class="form-control" placeholder="SSC/HSC/Honers/Mastars" />
+        <span asp-validation-for="MemberInfo.HeighestEducationalLevel" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MemberInfo.EducationalInstituteName" class="form-label">Name of the Institution</label>
+        <input asp-for="MemberInfo.EducationalInstituteName" type="text" class="form-control" placeholder="Enter Institution Name" />
+        <span asp-validation-for="MemberInfo.EducationalInstituteName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        @Html.LabelFor(m => m.MemberInfo.MarritialStatusId)
+        <label asp-for="MemberInfo.MarritialStatusId" class="form-label">Name <span class="text-danger">*</span></label>
+        @Html.DropDownListFor(m => m.MemberInfo.MarritialStatusId, new SelectList(Model.MarritialStatus, "Id", "StatusTitle"), "Select marital status", new { @class="form-control mt-2", id="marritialStatus" })
+        @Html.ValidationMessageFor(m => m.MemberInfo.MarritialStatusId)
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.SpouseName" class="form-label">Spouse Name</label>
+        <input asp-for="MemberInfo.SpouseName" type="text" class="form-control spouse-info" placeholder="Enter Your Spouse Name" disabled />
+        <span asp-validation-for="MemberInfo.SpouseName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.SpouseNid" class="form-label">Spouse NID</label>
+        <input asp-for="MemberInfo.SpouseNid" type="text" class="form-control spouse-info" placeholder="Enter Your Spouse NID" disabled />
+        <span asp-validation-for="MemberInfo.SpouseNid" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.SpousePhone" class="form-label">Spouse Phone Number</label>
+        <input asp-for="MemberInfo.SpousePhone" type="text" class="form-control spouse-info" placeholder="Enter Your Spouse Phone Num" disabled />
+        <span asp-validation-for="MemberInfo.SpousePhone" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.SpouseOccupation"  class="form-label">Spouse Occupation</label>
+        <input asp-for="MemberInfo.SpouseOccupation" type="text" class="form-control spouse-info" placeholder="Enter Your Spouse Occupation" disabled />
+        <span asp-validation-for="MemberInfo.SpouseOccupation" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.FamilyMember" class="form-label">Number of Family Member</label>
+        <input asp-for="MemberInfo.FamilyMember" type="number" class="form-control" placeholder="Enter your total family member" />
+        <span asp-validation-for="MemberInfo.FamilyMember" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.EarningMember" class="form-label">Number of Earning Member in Family</label>
+        <input asp-for="MemberInfo.EarningMember" type="number" class="form-control" placeholder="Enter num of earning member" />
+        <span asp-validation-for="MemberInfo.EarningMember" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MemberInfo.FamilyTotalEarningPerMonth" class="form-label">Total Earning of Family in a Month</label>
+        <input asp-for="MemberInfo.FamilyTotalEarningPerMonth" type="number" class="form-control" placeholder="Enter Total Earning of Family in a Month" />
+        <span asp-validation-for="MemberInfo.FamilyTotalEarningPerMonth" class="text-danger"></span>
+    </div>
+
+    <input asp-for="MemberInfo.GroupId" type="number" class="form-control" hidden />
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-info bi bi-plus-circle"> Add Member</button>
+        <a asp-action="AllMembers" asp-controller="Member" class="btn btn-dark bi bi-skip-backward-fill"> Back To Member List</a>
+    </div>
+</form>
+
+
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $("#marritialStatus").on("change", function () {
+            var status = $("#marritialStatus").val();
+            const Married = 2;
+            if (status == Married)
+                $(".spouse-info").prop("disabled", false);
+            else
+                $(".spouse-info").prop("disabled", true);
+        });
+    </script>
+}

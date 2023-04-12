@@ -1,0 +1,32 @@
+﻿@model SelectList;
+@{
+    ViewData["Title"] = "LoanCollection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center mt-2">
+    <select id="selectedCollector" name="CollectorId" asp-items="Model" class="w-25 d-inline-block py-2 text-center">
+        <option value="0">--- Select Collector ---</option>
+    </select>
+    <button class="btn btn-primary pt-1" id="view-record"> View Record</button>
+
+    <div id="loan-collection-report" class="mt-4 text-start"></div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(()=>{
+            $("#view-record").on("click",(event)=>{
+                const id = $("#selectedCollector").val();
+                if(id == 0){
+                    alert("Select a valid collector");
+                    return;
+                }
+                $.get("/report/LoanCollectionReport/" + id, function (content) {
+                    $("#loan-collection-report").html(content);
+                });
+            });
+        });
+    </script>
+}
+

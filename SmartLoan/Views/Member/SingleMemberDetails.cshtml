@@ -1,0 +1,69 @@
+﻿@model SmartLoan.ViewModels.SingleMemberViewModel
+@{
+    ViewData["Title"] = "SingleMemberDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mt-2">
+            <h4>Member Name: @Model.MemberInfo.Name</h4>
+            @if(Model.GroupInfo == null)
+            {
+                <h6>Group: No Group Added</h6>
+            }
+            else
+            {
+                <h6>Group: @Model.GroupInfo.Name</h6>
+            }
+            <hr />
+            <h5>Personal Information</h5>
+            <hr />
+            <h6>NID Number: @Model.MemberInfo.Nid</h6>
+            <h6>Passport Number: @Model.MemberInfo.PassportNum</h6>
+            <h6>Birthdate: @Model.MemberInfo.BirthDate.Value.ToLongDateString()</h6>
+            <h6>Mobile Number: @Model.MemberInfo.MobileNumber</h6>
+            <h6>Occupation: @Model.MemberInfo.Occupation</h6>
+            <h6>Father's Name: @Model.MemberInfo.FatherName</h6>
+            <h6>Mother's Name: @Model.MemberInfo.MotherName</h6>
+            <h6>Address: @Model.MemberInfo.Address</h6>
+            <hr />
+            <h6>Marritial Status: @Model.MarritialStatus.StatusTitle</h6>
+            @if(Model.MemberInfo.MarritialStatusId == MagicNumber.Married)
+            {
+                <h6>Spouse Name: @Model.MemberInfo.SpouseName</h6>
+                <h6>Spouse NID: @Model.MemberInfo.SpouseNid</h6>
+                <h6>Spouse Phone Number: @Model.MemberInfo.SpousePhone</h6>
+                <h6>Spouse Name: @Model.MemberInfo.SpouseName</h6>
+                <h6>Spouse Occupation: @Model.MemberInfo.SpouseOccupation</h6>
+            }
+
+            <a asp-action="EditMember" asp-controller="Member" asp-route-id="@Model.MemberInfo.Id" asp-controller="Group" class="btn btn-outline-warning btn-sm bi bi-pencil-square mt-3"> Edit Member</a>
+
+            @if (Model.GroupInfo == null)
+            {
+                <a asp-action="AllMembers" asp-controller="Member" class="btn btn-outline-dark btn-sm bi bi-skip-backward-fill mt-3"> Back To Member List</a>
+            }
+            else
+            {
+                <a asp-action="ViewMembers" asp-route-id="@Model.MemberInfo.GroupId" asp-controller="Group" class="btn btn-outline-dark btn-sm bi bi-skip-backward-fill mt-3"> Back To Member List</a>
+            }
+
+        </div>
+
+        <div class="col-md-4 mt-5">
+            <h5>Educational Details</h5>
+            <hr />
+            <h6>Highest Educational Level: @Model.MemberInfo.HeighestEducationalLevel</h6>
+            <h6>Institution: @Model.MemberInfo.EducationalInstituteName</h6>
+            <hr />
+            <h5>Economical Details</h5>
+            <hr />
+            <h6>Family Member: @Model.MemberInfo.FamilyMember</h6>
+            <h6>Earning Member: @Model.MemberInfo.EarningMember</h6>
+            <h6>Total Earning per month: @Model.MemberInfo.FamilyTotalEarningPerMonth</h6>
+        </div>
+    </div>
+</div>
+
+

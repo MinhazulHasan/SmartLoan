@@ -1,0 +1,89 @@
+﻿@model SmartLoan.ViewModels.CollectionPerCollectorViewModel
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> _userManager
+
+@{
+    ViewData["Title"] = "Collection Per Collector";
+    Layout = null;
+}
+
+@functions {
+    int id = 1;
+    public int Idgenerator()
+    {
+        return id++; 
+    }
+}
+
+<head>
+
+    <link href="~/lib/datatables/css/jquery.datatables.css" rel="stylesheet" />
+</head>
+
+<div class="d-flex justify-content-between my-3">
+    <h4> Name: @Model.User.UserName </h4>
+    <h4> Email: @Model.User.Email  </h4>
+    <h4> Collected Amount: @Model.CollectedAmount </h4>
+</div>
+
+
+<table class="table text-center pt-3" id="collection-per-collector-table">
+    <thead class="table-primary">
+        <tr>
+            <td>#</td>
+            <td> Collection Id </td>
+            <td> Group Name </td>
+            <td> Collector Name </td>
+            <td> Collection Date </td>
+            <td> Amount </td>
+            <td> Payment Method </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var collection in Model.OfficeCollectionsPerCollector)
+        {
+            <tr>
+                <td> @Idgenerator() </td>
+                <td> @collection.Collection.CollectionId </td>
+                <td> @collection.Collection.GroupInfo.Name </td>
+
+                @{
+                    var user = await _userManager.FindByIdAsync(collection.CollectorId);
+                }
+
+                <td> @user.UserName </td>
+
+                <td> @collection.CollectionDate </td>
+                <td> @collection.Amount </td>
+                @if (@collection.PaymentMethod == MagicNumber.CashPayment)
+                {
+                    <td> Cash </td>
+                }
+                else if (@collection.PaymentMethod == MagicNumber.DigitalPayment)
+                {
+                    <td> Online </td>
+                }
+                
+            </tr>
+        }
+    </tbody>
+    <tfoot class="table-primary fw-bolder">
+        <tr>
+            <td colspan="4"></td>
+            <td>Total</td>
+            <td>@Model.SubmittedAmount</td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+<script src="~/lib/datatables/js/jquery.datatables.js"></script>
+
+<script type="text/javascript">        
+    $(document).ready(function () {
+       $('#collection-per-collector-table').DataTable();
+    }); 
+</script>
+
+
